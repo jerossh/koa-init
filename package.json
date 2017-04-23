@@ -1,0 +1,75 @@
+{
+  "name": "koa-init",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "accepts": "^1.3.3",
+    "any-promise": "^1.3.0",
+    "co": "^4.6.0",
+    "content-disposition": "^0.5.2",
+    "content-type": "^1.0.2",
+    "cookies": "^0.7.0",
+    "debug": "^2.6.4",
+    "deep-equal": "^1.0.1",
+    "delegates": "^1.0.0",
+    "depd": "^1.1.0",
+    "destroy": "^1.0.4",
+    "ee-first": "^1.1.1",
+    "error-inject": "^1.0.0",
+    "escape-html": "^1.0.3",
+    "fresh": "^0.5.0",
+    "http-assert": "^1.2.0",
+    "http-errors": "^1.6.1",
+    "inherits": "^2.0.3",
+    "is-generator-function": "^1.0.6",
+    "keygrip": "^1.0.1",
+    "koa": "^2.2.0",
+    "koa-bodyparser": "^4.2.0",
+    "koa-compose": "^3.2.1",
+    "koa-convert": "^1.2.0",
+    "koa-generic-session": "^1.11.5",
+    "koa-is-json": "^1.0.0",
+    "koa-json": "^2.0.2",
+    "koa-logger": "^2.0.1",
+    "koa-mongoose": "^2.0.0",
+    "koa-onerror": "^3.1.0",
+    "koa-pug": "^3.0.0-2",
+    "koa-redis": "^3.0.0",
+    "koa-router": "^7.1.1",
+    "media-typer": "^0.3.0",
+    "mime-db": "^1.27.0",
+    "mime-types": "^2.1.15",
+    "ms": "^0.7.3",
+    "negotiator": "^0.6.1",
+    "on-finished": "^2.3.0",
+    "only": "^0.0.2",
+    "parseurl": "^1.3.1",
+    "setprototypeof": "^1.0.3",
+    "statuses": "^1.3.1",
+    "type-is": "^1.6.15",
+    "vary": "^1.1.1"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.18.8",
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.2.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jerossh/koa-init.git"
+  },
+  "keywords": [
+    "koa",
+    "node.js"
+  ],
+  "author": "Jon",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jerossh/koa-init/issues"
+  },
+  "homepage": "https://github.com/jerossh/koa-init#readme"
+}
