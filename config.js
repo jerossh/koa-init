@@ -23,8 +23,11 @@ const c = {
   'secret': 'program',
   'port': 3000,
   'staticOption': staticOption,
+  'debug': process.env.NODE_ENV === 'development',
   'programSetting': {
-
+      'sitename': 'koa 启动程序',
+      'keyword': 'koa, koa2, koa && mongodb',
+      'decribtion': 'jon 制作的 koa 2启动程序， 不兼容 koa1'
   }
 }
 

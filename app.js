@@ -2,9 +2,10 @@ const Koa = require('koa');
 const app = new Koa();
 const config = require('./config');
 const router = require('koa-router')(); 
+const serve = require('koa-static');
 const Pug = require('koa-pug');
 const co = require('co');
-const convert = require('koa-convert');
+const convert = require('koa-convert'); // 转换 promise 支持 koa 1
 const json = require('koa-json');
 const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
@@ -12,7 +13,40 @@ const logger = require('koa-logger');
 const mongoose = require('koa-mongoose');
 const session = require('koa-generic-session'); // different from koa-session(it is cookie session).
 const redisStore = require('koa-redis');
-const UglifyJS = require('uglify-js')
+const UglifyJS = require('uglify-js');
+
+
+// 中间件配置
+app.use(serve('./public'));
+app.use(json({ pretty: false, param: 'pretty' }));
+app.use(bodyparser({
+  extendTypes: {
+    json: ['application/x-javascript'] // will parse application/x-javascript type body as a JSON string 
+  },
+  onerror: function (err, ctx) {
+    ctx.throw('body parse error', 422);
+  }
+}));
+
+// 数据库
+require('mongoose').Promise = global.Promise
+app.use(mongoose({
+    mongoose: require('mongoose-q')(), //custom mongoose ， mongoose-q 用于支持 es 6 的 promise
+    // user: '',
+    // pass: '',
+    host: '127.0.0.1',
+    port: 27017,
+    database: 'test',
+    db: {
+        native_parser: true
+    },
+    server: {
+        poolSize: 5 // 五个线程？
+    }
+}))
+app.use(session({
+  store: redisStore()
+}));
 
 
 const pug = new Pug({
@@ -29,43 +63,29 @@ const pug = new Pug({
   // ],
   app: app // equals to pug.use(app) and app.use(pug.middleware) 
 })
+// 压缩行内样式
+pug.options.filters = {
+  uglify: function (text, options) {
+    if(config.debug){
+      return text;
+    } else {
+      let result = UglifyJS.minify(text, {fromString: true});
+      return result.code;
+    }
+  }
+}
 pug.locals.someKey = 'some value';
 
 
-// 中间件配置
-app.use(json({ pretty: false, param: 'pretty' }));
-app.use(bodyparser({
-  extendTypes: {
-    json: ['application/x-javascript'] // will parse application/x-javascript type body as a JSON string 
-  },
-  onerror: function (err, ctx) {
-    ctx.throw('body parse error', 422);
-  }
-}));
-app.use(mongoose({
-    mongoose: require('mongoose-q')(),//custom mongoose 
-    user: '',
-    pass: '',
-    host: '127.0.0.1',
-    port: 27017,
-    database: 'test',
-    db: {
-        native_parser: true
-    },
-    server: {
-        poolSize: 5
-    }
-}))
-app.use(session({
-  store: redisStore()
-}));
+
 
 
 
 // 开发模式配置
-if (process.env.NODE_ENV === 'development') {
+if (config.debug) {
   onerror(app); // 错误处理
   app.use(logger())
+  // app.use(convert(logger()));
 
 }
 
