@@ -1,18 +1,18 @@
 const Koa = require('koa');
 const app = new Koa();
 const config = require('./config');
-const router = require('koa-router')(); 
-const serve = require('koa-static');
-const Pug = require('koa-pug');
-const co = require('co');
-const convert = require('koa-convert'); // 转换 promise 支持 koa 1
-const json = require('koa-json');
-const onerror = require('koa-onerror');
 const bodyparser = require('koa-bodyparser');
-const logger = require('koa-logger');
+const json = require('koa-json');
+const serve = require('koa-static');
+const router = require('koa-router')(); 
+const Pug = require('koa-pug');
+// const co = require('co');
+// const convert = require('koa-convert'); // 转换 promise 支持 koa 1
 const mongoose = require('koa-mongoose');
 const session = require('koa-generic-session'); // different from koa-session(it is cookie session).
 const redisStore = require('koa-redis');
+const onerror = require('koa-onerror');
+const logger = require('koa-logger');
 const UglifyJS = require('uglify-js');
 
 
@@ -115,26 +115,45 @@ app.use( async ( ctx, next ) => {
       }
     )
     // ctx.body = 'cookie is ok'
-    await next();
-  } else {
-    ctx.body = 'hello world' 
+
   }
+  //  else {
+  //   // ctx.body = 'hello world' 
+  //   ctx.render('index');
+  // }
+  await next();
 
 })
 
 
-app.use(async (ctx, next) => {
-  const start = new Date();
-  await next();
-  const ms = new Date() - start;
-  console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-  // console.log(ctx.cookies)
-});
+// 装载所有子路由
+let router = new Router()
+// router.use('/', home.routes(), home.allowedMethods())
+// router.use('/page', page.routes(), page.allowedMethods())
+
+
+
+
+
+
+
+
+
+
+
+// app.use(async (ctx, next) => {
+//   const start = new Date();
+//   await next();
+//   const ms = new Date() - start;
+//   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
+//   // console.log(ctx.cookies)
+// });
 
 // response
-app.use(ctx => {
-  ctx.body = 'ctx.cookies';
-});
+// app.use(ctx => {
+//   // ctx.body = 'ctx.cookies';
+//   ctx.render('admin')
+// });
 
 
 
