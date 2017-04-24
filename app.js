@@ -17,6 +17,8 @@ const UglifyJS = require('uglify-js');
 
 
 // 中间件配置
+app.keys = ['im a newer secret', 'i like turtle']; // 设置签名Cookie密钥
+
 app.use(serve('./public'));
 app.use(json({ pretty: false, param: 'pretty' }));
 app.use(bodyparser({
@@ -84,6 +86,10 @@ pug.locals.someKey = 'some value';
 // 开发模式配置
 if (config.debug) {
   onerror(app); // 错误处理
+  // app.on('error', function(err){
+  //   log.error('server error', err);
+  // });
+
   app.use(logger())
   // app.use(convert(logger()));
 
@@ -93,20 +99,49 @@ if (config.debug) {
 
 
 // koa 默认有一个 favicon.ico 请求？
+app.use( async ( ctx, next ) => {
+
+  if ( ctx.url === '/admin' ) {
+    ctx.cookies.set(
+      'cid', 
+      'you can see it',
+      {
+        domain: 'localhost',  // 写cookie所在的域名
+        path: '/admin',       // 写cookie所在的路径
+        maxAge: 10 * 60 * 1000, // cookie有效时长
+        // expires: new Date('2017-02-15'),  // cookie失效时间
+        httpOnly: false,  // 是否只用于http请求中获取
+        // overwrite: false  // 是否允许重写
+      }
+    )
+    // ctx.body = 'cookie is ok'
+    await next();
+  } else {
+    ctx.body = 'hello world' 
+  }
+
+})
+
 
 app.use(async (ctx, next) => {
   const start = new Date();
   await next();
   const ms = new Date() - start;
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
-  // console.log(ctx.method)
+  // console.log(ctx.cookies)
 });
 
 // response
 app.use(ctx => {
-  ctx.body = { foo: 'bar' };
+  ctx.body = 'ctx.cookies';
 });
 
+
+
+
+
+
+// 启动程序
 const server = app.listen(config.port, (x) => {
   console.log(server._connectionKey, '启动成功')
   console.log('环境：', process.env.NODE_ENV )
