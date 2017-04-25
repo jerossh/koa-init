@@ -4,7 +4,7 @@ const config = require('./config');
 const bodyparser = require('koa-bodyparser');
 const json = require('koa-json');
 const serve = require('koa-static');
-const router = require('koa-router')(); 
+const Router = require('koa-router'); 
 const Pug = require('koa-pug');
 // const co = require('co');
 // const convert = require('koa-convert'); // 转换 promise 支持 koa 1
@@ -15,6 +15,8 @@ const onerror = require('koa-onerror');
 const logger = require('koa-logger');
 const UglifyJS = require('uglify-js');
 
+const adminRoute = require('./routes/admin')
+const indexRoute = require('./routes/index')
 
 // 中间件配置
 app.keys = ['im a newer secret', 'i like turtle']; // 设置签名Cookie密钥
@@ -29,6 +31,7 @@ app.use(bodyparser({
     ctx.throw('body parse error', 422);
   }
 }));
+// 对于POST请求的处理，koa-bodyparser中间件可以把koa2上下文的formData数据解析到ctx.request.body中
 
 // 数据库
 require('mongoose').Promise = global.Promise
@@ -127,9 +130,18 @@ app.use( async ( ctx, next ) => {
 
 
 // 装载所有子路由
-let router = new Router()
-// router.use('/', home.routes(), home.allowedMethods())
-// router.use('/page', page.routes(), page.allowedMethods())
+const router = new Router();
+router.use('/', indexRoute.routes(), indexRoute.allowedMethods());
+// router.use(['/users', '/admin'], adminRoute.routes(), adminRoute.allowedMethods());
+// adminRoute.use(authorize())
+router.use('/admin', adminRoute.routes(), adminRoute.allowedMethods());
+router.get('/:d', async (ctx) => {
+  ctx.body = '该页面不存在'
+  
+})
+
+// 加载路由中间件
+app.use(router.routes()).use(router.allowedMethods())
 
 
 
@@ -151,9 +163,15 @@ let router = new Router()
 
 // response
 // app.use(ctx => {
-//   // ctx.body = 'ctx.cookies';
-//   ctx.render('admin')
+//   ctx.body = 'ctx.cookies';
+//   // ctx.render('admin')
 // });
+
+
+// app.use(ctx => {
+//   ctx.body ='11111';
+// });
+
 
 
 
