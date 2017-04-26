@@ -69,10 +69,11 @@ app.use(session({
 const pug = new Pug({
   viewPath: './views',
   debug: config.debug,
-  pretty: false,
-  compileDebug: false,
+  pretty: config.debug,
+  compileDebug: config.debug,  
+  // noCache: config.debug,
   // locals: global_locals_for_all_pages,
-  basedir: 'path/for/pug/extends',
+  // basedir: './views/extends/layout',
   // helperPath: [
   //   'path/to/pug/helpers',
   //   { random: 'path/to/lib/random.js' },

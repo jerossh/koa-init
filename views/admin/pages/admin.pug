@@ -1,6 +1,9 @@
--var val = 'a' 
-p 管理员
-form(method='post', action='/uploadFile', enc)
-  .form-group
-    label.control-label 用户名
-    input.form-control(type='text', name='user[name]', value=val)
+extends ../layout
+block content   
+  .container
+    p  管理员412312
+    form(method='post', action='/uploadFile', enctype='application/x-www-form-urlencoded')
+      .form-group
+        label.control-label 用户名
+        input.form-control(type='text', name='user[name]', value=val)
+      button(type='submit') 提交12312

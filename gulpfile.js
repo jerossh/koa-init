@@ -10,8 +10,8 @@ gulp.task('serve', function () {
     script: 'app',
     ext: 'js',
     ignore: [
-      './app/public/',
-      './app/idea/',
+      './public/',
+      './idea/',
     ],
     env: { 'NODE_ENV': 'development' }
   })
@@ -22,7 +22,7 @@ const openBrowser = (process.platform === 'win32')?false:true;
 gulp.task('start', function() {
   browserSync.init({      // null 干什么用？
       proxy: 'http://localhost:' + config.port,   // 监控代理地址
-      files: ['./app/public', './app/views'],             // 监控的文件
+      files: ['./public', './views'],             // 监控的文件
       open: openBrowser,                          // 是否打开浏览器
       browser: 'google chrome',                   // 打开的浏览器名称
       notify: false,                              // 浏览器不现实通知，不知道什么意思
