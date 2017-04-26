@@ -7,4 +7,8 @@ admin.get('/', ( ctx ) => {
     ctx.render('admin/pages/admin', {}, true)
 })
 
+admin.post('/', ( ctx ) => {
+    ctx.body = {user: ''}
+})
+
 module.exports = admin;

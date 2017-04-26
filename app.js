@@ -71,7 +71,7 @@ const pug = new Pug({
   debug: config.debug,
   pretty: config.debug,
   compileDebug: config.debug,  
-  // noCache: config.debug,
+  noCache: config.debug,
   // locals: global_locals_for_all_pages,
   // basedir: './views/extends/layout',
   // helperPath: [
