@@ -3,11 +3,11 @@ const app = new Koa();
 const config = require('./config');
 const bodyparser = require('koa-bodyparser');
 const json = require('koa-json');
-const serve = require('koa-static');
+const static = require('koa-static');
 const Router = require('koa-router'); 
 const Pug = require('koa-pug');
-// const co = require('co');
-// const convert = require('koa-convert'); // 转换 promise 支持 koa 1
+// const co = require('co');  // generation 函数 支持 
+// const convert = require('koa-convert'); // 转换 promise 支持 koa 2
 const mongoose = require('koa-mongoose');
 const session = require('koa-generic-session'); // different from koa-session(it is cookie session).
 const redisStore = require('koa-redis');
@@ -15,13 +15,13 @@ const onerror = require('koa-onerror');
 const logger = require('koa-logger');
 const UglifyJS = require('uglify-js');
 
-const adminRoute = require('./routes/admin')
-const indexRoute = require('./routes/index')
+const adminRoute = require('./routes/admin');
+const indexRoute = require('./routes/index');
 
 // 中间件配置
 app.keys = ['im a newer secret', 'i like turtle']; // 设置签名Cookie密钥
 
-app.use(serve('./public'));
+app.use(static('./public'));
 app.use(json({ pretty: false, param: 'pretty' }));
 app.use(bodyparser({
   extendTypes: {
