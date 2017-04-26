@@ -3,6 +3,7 @@ const app = new Koa();
 const config = require('./config');
 const bodyparser = require('koa-bodyparser');
 const json = require('koa-json');
+const Busboy = require('busboy');
 const serve = require('koa-static');
 const Router = require('koa-router'); 
 const Pug = require('koa-pug');
@@ -18,6 +19,13 @@ const UglifyJS = require('uglify-js');
 const adminRoute = require('./routes/admin')
 const indexRoute = require('./routes/index')
 
+
+// 如果不存在 环境模式，则设置为生产模式
+if (!config.debug) {
+  process.env.NODE_ENV = 'production'
+}
+
+
 // 中间件配置
 app.keys = ['im a newer secret', 'i like turtle']; // 设置签名Cookie密钥
 
@@ -32,6 +40,7 @@ app.use(bodyparser({
   }
 }));
 // 对于POST请求的处理，koa-bodyparser中间件可以把koa2上下文的formData数据解析到ctx.request.body中
+
 
 // 数据库
 require('mongoose').Promise = global.Promise
@@ -50,13 +59,15 @@ app.use(mongoose({
     }
 }))
 app.use(session({
+  key: 'koa-session',
+  ttl: 15 * 60 * 1000,
   store: redisStore()
 }));
 
 
 const pug = new Pug({
   viewPath: './views',
-  debug: process.env.NODE_ENV === 'development',
+  debug: config.debug,
   pretty: false,
   compileDebug: false,
   // locals: global_locals_for_all_pages,
@@ -71,7 +82,7 @@ const pug = new Pug({
 // 压缩行内样式
 pug.options.filters = {
   uglify: function (text, options) {
-    if(config.debug){
+    if (config.debug) {
       return text;
     } else {
       let result = UglifyJS.minify(text, {fromString: true});
@@ -79,11 +90,7 @@ pug.options.filters = {
     }
   }
 }
-pug.locals.someKey = 'some value';
-
-
-
-
+pug.locals._info = config.programSetting;
 
 
 // 开发模式配置
@@ -99,9 +106,7 @@ if (config.debug) {
 }
 
 
-
-
-// koa 默认有一个 favicon.ico 请求？
+// 设置cookie； koa 默认有一个 favicon.ico 请求？
 app.use( async ( ctx, next ) => {
 
   if ( ctx.url === '/admin' ) {
@@ -111,13 +116,14 @@ app.use( async ( ctx, next ) => {
       {
         domain: 'localhost',  // 写cookie所在的域名
         path: '/admin',       // 写cookie所在的路径
-        maxAge: 10 * 60 * 1000, // cookie有效时长
+        maxAge: 30 * 60 * 1000, // cookie有效时长
         // expires: new Date('2017-02-15'),  // cookie失效时间
         httpOnly: false,  // 是否只用于http请求中获取
         // overwrite: false  // 是否允许重写
       }
     )
     // ctx.body = 'cookie is ok'
+    get.call(ctx);
 
   }
   //  else {
@@ -145,14 +151,6 @@ app.use(router.routes()).use(router.allowedMethods())
 
 
 
-
-
-
-
-
-
-
-
 // app.use(async (ctx, next) => {
 //   const start = new Date();
 //   await next();
@@ -173,6 +171,23 @@ app.use(router.routes()).use(router.allowedMethods())
 // });
 
 
+function get() {
+  var session = this.session;
+  session.count = session.count || 0;
+  session.count++;
+  this.body = session.count;
+}
+ 
+function remove() {
+  this.session = null;
+  this.body = 0;
+}
+ 
+async function regenerate() {
+  get.call(this);
+  await this.regenerateSession();
+  get.call(this);
+}
 
 
 
@@ -184,6 +199,6 @@ const server = app.listen(port, (err) => {
   console.log('环境：', process.env.NODE_ENV )
 });
 
-// server.on('error', ()=> {
-//   console.log('错误在', server.listen(++port))
-// })
+server.on('error', ()=> {
+  console.log('错误端口被占用', server.listen(++port))
+})
