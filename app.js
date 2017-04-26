@@ -92,6 +92,7 @@ pug.options.filters = {
   }
 }
 pug.locals._info = config.programSetting;
+pug.locals._env = config.debug;
 
 
 // 开发模式配置
