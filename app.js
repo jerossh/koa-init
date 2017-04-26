@@ -176,10 +176,14 @@ app.use(router.routes()).use(router.allowedMethods())
 
 
 
-
-
 // 启动程序
-const server = app.listen(config.port, (x) => {
+let port = config.port
+const server = app.listen(port, (err) => {
+  if (err) console.log('错误', err)
   console.log(server._connectionKey, '启动成功')
   console.log('环境：', process.env.NODE_ENV )
 });
+
+// server.on('error', ()=> {
+//   console.log('错误在', server.listen(++port))
+// })
