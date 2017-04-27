@@ -17,6 +17,7 @@ const sourcemaps = require('gulp-sourcemaps');  // 就是开发调试的时候�
 
 // 图片处理
 const imagemin = require('gulp-imagemin');
+const changed = require('gulp-changed');
 
 // 错误处理
 const plumber = require('gulp-plumber');
@@ -40,7 +41,7 @@ const paths = {
   'js': './dev/public/js/*.js',
   'styl': './dev/public/stylus/*.styl',
   'css': './public/stylesheet/',
-  'imgOrigin': './dev/public/images/*.jpg'
+  'imgOrigin': './dev/public/images/*.png'
 };
 
 
@@ -77,11 +78,18 @@ gulp.task('stylus2css', function () {
     .pipe(gulp.dest(paths.css));
 });
 
-gulp.task('minImage', () =>
-    gulp.src(paths.imgOrigin)
-        .pipe(imagemin())
-        .pipe(gulp.dest('./public/images/'))
-);
+// gulp.task('minImage', () =>
+//     gulp.src(paths.imgOrigin)
+//         // .pipe(plumber())
+//         // .pipe(changed('./public/images/'))
+//         .pipe(imagemin([
+//             // imagemin.gifsicle({interlaced: true}),
+//             // imagemin.jpegtran({progressive: true}),
+//             // imagemin.optipng({optimizationLevel: 2}),
+//             // imagemin.svgo({plugins: [{removeViewBox: true}]})
+//         ]))
+//         .pipe(gulp.dest('./public/images/'))
+// );
 
 
 
@@ -114,7 +122,7 @@ gulp.task('browser', function() {
   });
   gulp.watch(paths.styl, ['stylus2css']);         // 监控该文件夹， 后面对应的处理任务名
   gulp.watch(paths.js, ['scripts']);         // 监控该文件夹， 后面对应的处理任务名
-  gulp.watch(paths.imgOrigin, ['minImage']);         // 监控该文件夹， 后面对应的处理任务名
+  // gulp.watch(paths.imgOrigin, ['minImage']);         // 监控该文件夹， 后面对应的处理任务名
 });
 
 
