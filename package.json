@@ -57,9 +57,18 @@
     "bootstrap": "^3.3.7",
     "browser-sync": "^2.18.8",
     "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
     "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-imagemin": "^3.2.0",
     "gulp-nodemon": "^2.2.1",
-    "jquery": "^3.2.1"
+    "gulp-plumber": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-stylus": "^2.6.0",
+    "gulp-uglify": "^2.1.2",
+    "jquery": "^3.2.1",
+    "uglify": "^0.1.5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
